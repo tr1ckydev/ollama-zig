@@ -1,0 +1,11 @@
+.{
+    .name = "ollama-zig",
+    .version = "1.0.0",
+    .paths = .{
+        "LICENSE",
+        "build.zig",
+        "build.zig.zon",
+        "src/ollama.zig",
+        "src/types.zig",
+    },
+}
