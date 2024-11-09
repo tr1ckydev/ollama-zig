@@ -35,7 +35,7 @@ The Ollama zig library is the easiest way to interact and integrate your zig pro
 var ollama = Ollama.init(allocator, .{});
 defer ollama.deinit();
 const res = try ollama.generate(.{
-    .model = "llama2",
+    .model = "llama3.2",
     .prompt = "Why is the sky blue?",
     .stream = false,
 });
@@ -54,7 +54,7 @@ Functions with suffix `Stream` always return an iterator interface where each pa
 var ollama = Ollama.init(allocator, .{});
 defer ollama.deinit();
 const stream = try ollama.generateStream(.{
-    .model = "llama2",
+    .model = "llama3.2",
     .prompt = "Why is the sky blue?",
 });
 while (try stream.next()) |part| {
@@ -72,7 +72,7 @@ Access the underlying Ollama API structs.
 
 ```zig
 const req = Ollama.Type.GenerateRequest{
-    .model = "llama2",
+    .model = "llama3.2",
     .prompt = "Why is the sky blue?",
     .stream = false,
 };
@@ -117,7 +117,7 @@ try msgs.append(.{ .role = "user", .content = "Why is the sky blue?" });
 var ollama = Ollama.init(allocator, .{});
 defer ollama.deinit();
 const res = try ollama.chat(.{
-    .model = "llama2",
+    .model = "llama3.2",
     .messages = msgs.items,
     .stream = false,
 });
@@ -146,7 +146,7 @@ try msgs.append(.{ .role = "user", .content = "Why is the sky blue?" });
 var ollama = Ollama.init(allocator, .{});
 defer ollama.deinit();
 const stream = try ollama.chatStream(.{
-    .model = "llama2",
+    .model = "llama3.2",
     .messages = msgs.items,
 });
 while (try stream.next()) |part| {
@@ -164,7 +164,7 @@ This is not a streaming endpoint and returns a single response object. (Requires
 var ollama = Ollama.init(allocator, .{});
 defer ollama.deinit();
 const res = try ollama.generate(.{
-    .model = "llama2",
+    .model = "llama3.2",
     .prompt = "Why is the sky blue?",
     .stream = false,
 });
@@ -190,7 +190,7 @@ Streamable version of the above `generate` function.
 var ollama = Ollama.init(allocator, .{});
 defer ollama.deinit();
 const stream = try ollama.generateStream(.{
-    .model = "llama2",
+    .model = "llama3.2",
     .prompt = "Why is the sky blue?",
 });
 while (try stream.next()) |part| {
@@ -218,7 +218,7 @@ Show information about a model including details, modelfile, template, parameter
 ```zig
 var ollama = Ollama.init(allocator, .{ .response_max_size = 1024 * 100 });
 defer ollama.deinit();
-const res = try ollama.show(.{ .model = "llama2" });
+const res = try ollama.show(.{ .model = "llama3.2" });
 std.debug.print("{s}", .{res.modelfile});
 ```
 
@@ -235,7 +235,7 @@ Generate embeddings from a model for a given prompt.
 var ollama = Ollama.init(allocator, .{ .response_max_size = 1024 * 100 });
 defer ollama.deinit();
 const res = try ollama.embeddings(.{
-    .model = "llama2",
+    .model = "llama3.2",
     .prompt = "Why is the sky blue?",
 });
 std.debug.print("{any}", .{res.embedding});

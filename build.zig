@@ -2,14 +2,14 @@ const std = @import("std");
 
 pub fn build(b: *std.Build) void {
     const ollama_mod = b.addModule("ollama-zig", .{
-        .root_source_file = .{ .path = "src/ollama.zig" },
+        .root_source_file = b.path("src/ollama.zig"),
     });
 
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
     const exe = b.addExecutable(.{
         .name = "ollama-zig",
-        .root_source_file = .{ .path = "src/main.zig" },
+        .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
     });

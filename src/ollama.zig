@@ -11,11 +11,19 @@ fn Streamable(comptime T: type) type {
         var done: bool = false;
         pub fn next(self: @This()) !?T {
             if (done) return null;
-            const response = try self.request.reader().readUntilDelimiterAlloc(self.request.client.allocator, '\n', 2048);
-            const parsed = try std.json.parseFromSlice(T, self.request.client.allocator, response, .{});
-            defer parsed.deinit();
-            done = parsed.value.done;
-            return parsed.value;
+            const result = self.request.reader().readUntilDelimiterAlloc(self.request.client.allocator, '\n', 2048);
+            if (result) |response| {
+                const options = std.json.ParseOptions{
+                    .ignore_unknown_fields = true,
+                };
+                const parsed = try std.json.parseFromSlice(T, self.request.client.allocator, response, options);
+                defer parsed.deinit();
+                done = parsed.value.done;
+                return parsed.value;
+            } else |err| switch (err) {
+                error.EndOfStream => return null,
+                else => return err,
+            }
         }
     };
 }
@@ -35,7 +43,7 @@ pub fn init(allocator: std.mem.Allocator, config: Type.Config) Ollama {
 
 /// Release all resources used by the client.
 pub fn deinit(self: *Ollama) void {
-    if (self.fetch_response) |_| self.fetch_response.?.deinit();
+    // if (self.fetch_response) |_| self.fetch_response.?.deinit();
     if (self.post_request) |_| self.post_request.?.deinit();
     self.client.deinit();
 }
@@ -44,13 +52,15 @@ fn sendPOST(self: *Ollama, path: []const u8, request: anytype) !void {
     var json_string = std.ArrayList(u8).init(self.client.allocator);
     defer json_string.deinit();
     try std.json.stringify(request, .{}, json_string.writer());
-    var headers = std.http.Headers.init(self.client.allocator);
-    defer headers.deinit();
-    const options = std.http.Client.RequestOptions{};
+    const header = try self.client.allocator.alloc(u8, 1024 * 8);
+    defer self.client.allocator.free(header);
+    const options = std.http.Client.RequestOptions{
+        .server_header_buffer = header,
+    };
     const uri = try std.Uri.parse(try std.mem.concat(self.client.allocator, u8, &.{ self.config.host, path }));
-    self.post_request = try self.client.open(.POST, uri, headers, options);
+    self.post_request = try self.client.open(.POST, uri, options);
     self.post_request.?.transfer_encoding = .chunked;
-    try self.post_request.?.send(.{});
+    try self.post_request.?.send();
     try self.post_request.?.writeAll(json_string.items);
     try self.post_request.?.finish();
     try self.post_request.?.wait();
