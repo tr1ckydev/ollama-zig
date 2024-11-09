@@ -9,7 +9,7 @@ pub fn main() !void {
     var ollama = Ollama.init(std.heap.c_allocator, .{});
     defer ollama.deinit();
     const itr = try ollama.chatStream(.{
-        .model = "llama2-uncensored",
+        .model = "llama3.2",
         .messages = msgs.items,
     });
     while (try itr.next()) |part| {
