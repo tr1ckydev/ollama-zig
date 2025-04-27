@@ -1,5 +1,5 @@
 const std = @import("std");
-const Ollama = @import("ollama-zig");
+const Ollama = @import("ollama");
 
 pub fn main() !void {
     var msgs = std.ArrayList(Ollama.Type.Message).init(std.heap.c_allocator);
