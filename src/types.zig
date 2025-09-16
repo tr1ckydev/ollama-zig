@@ -6,6 +6,7 @@ pub const Config = struct {
 pub const Message = struct {
     role: []const u8,
     content: []const u8,
+    images: ?[]const []const u8 = null,
 };
 
 pub const Options = struct {
@@ -80,6 +81,7 @@ pub const GenerateRequest = struct {
     model: []const u8,
     prompt: []const u8,
     stream: bool = true,
+    images: ?[]const []const u8 = null,
     format: ?[]const u8 = null,
     options: ?Options = null,
     template: ?[]const u8 = null,
