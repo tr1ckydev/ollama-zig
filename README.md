@@ -16,15 +16,15 @@ The Ollama zig library is the easiest way to interact and integrate your zig pro
 2. Add the dependency and module to your `build.zig`.
 
    ```zig
-   const ollama_dep = b.dependency("ollama-zig", .{});
-   const ollama_mod = ollama_dep.module("ollama-zig");
-   exe.root_module.addImport("ollama-zig", ollama_mod);
+   const ollama_dep = b.dependency("ollama", .{});
+   const ollama_mod = ollama_dep.module("ollama");
+   exe.root_module.addImport("ollama", ollama_mod);
    ```
 
 3. Import it inside your project.
 
    ```zig
-   const Ollama = @import("ollama-zig");
+   const Ollama = @import("ollama");
    ```
 
 
